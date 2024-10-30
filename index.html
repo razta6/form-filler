@@ -60,21 +60,21 @@
     </style>
 </head>
 <body>
-    <h1>Document Fill Form</h1>
+    <h1>אישור יציאה לגבעות הכורכר</h1>
 
     <!-- Form Inputs -->
     <div class="form-group">
-        <label for="name">Name:</label>
+        <label for="name">שם הילד/ה</label>
         <input type="text" id="name" required>
     </div>
     
     <div class="form-group">
-        <label for="date">Date:</label>
+        <label for="date">תאריך</label>
         <input type="date" id="date" required>
     </div>
     
     <div class="form-group">
-        <label>Signature:</label>
+        <label>חתימה</label>
         <canvas id="signature-pad" width="400" height="200"></canvas>
         <button id="clear-signature">Clear Signature</button>
     </div>
@@ -92,8 +92,8 @@
         templateImage.src = 'https://i.ibb.co/G0WZs01/IMG-20241030-WA0040.jpg';
         
         const POSITIONS = {
-            name: { x: 400, y: 280 },
-            date: { x: 600, y: 700 },
+            name: { x: 350, y: 280 },
+            date: { x: 600, y: 700 }, 
             signature: { x: 450, y: 500 }
         };
 
