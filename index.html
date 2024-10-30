@@ -76,10 +76,10 @@
     <div class="form-group">
         <label>חתימה</label>
         <canvas id="signature-pad" width="400" height="200"></canvas>
-        <button id="clear-signature">Clear Signature</button>
+        <button id="clear-signature">נקה חתימה</button>
     </div>
     
-    <button id="submit-form">Submit</button>
+    <button id="submit-form">שליחה</button>
     
     <div id="preview-container">
         <canvas id="preview-canvas"></canvas>
@@ -92,8 +92,8 @@
         templateImage.src = 'https://i.ibb.co/G0WZs01/IMG-20241030-WA0040.jpg';
         
         const POSITIONS = {
-            name: { x: 350, y: 280 },
-            date: { x: 600, y: 700 }, 
+            name: { x: 600, y: 280 },
+            date: { x: 800, y: 700 }, 
             signature: { x: 450, y: 500 }
         };
 
