@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #signature-pad {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            touch-action: none;
+            background-color: #fff;
+        }
+        #preview-container {
+            position: relative;
+            margin-top: 20px;
+            display: none;
+        }
+        #preview-canvas {
+            max-width: 100%;
+            height: auto;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #clear-signature {
+            background-color: #dc3545;
+        }
+        #clear-signature:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Document Fill Form</h1>
+
+    <!-- Form Inputs -->
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="date">Date:</label>
+        <input type="date" id="date" required>
+    </div>
+    
+    <div class="form-group">
+        <label>Signature:</label>
+        <canvas id="signature-pad" width="400" height="200"></canvas>
+        <button id="clear-signature">Clear Signature</button>
+    </div>
+    
+    <button id="submit-form">Submit</button>
+    
+    <div id="preview-container">
+        <canvas id="preview-canvas"></canvas>
+        <button id="download">Download</button>
+    </div>
+
+    <script>
+        // Initialize variables
+        const templateImage = new Image();
+        templateImage.src = 'https://i.ibb.co/G0WZs01/IMG-20241030-WA0040.jpg';
+        
+        const POSITIONS = {
+            name: { x: 450, y: 280 },
+            date: { x: 600, y: 700 },
+            signature: { x: 450, y: 500 }
+        };
+
+        // Initialize signature pad
+        const signaturePad = document.getElementById('signature-pad');
+        const ctx = signaturePad.getContext('2d');
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // Drawing functions
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = getCoordinates(e);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            e.preventDefault();
+            const [x, y] = getCoordinates(e);
+            
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            
+            [lastX, lastY] = [x, y];
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function getCoordinates(e) {
+            const rect = signaturePad.getBoundingClientRect();
+            const x = e.type.includes('touch') 
+                ? e.touches[0].clientX - rect.left 
+                : e.clientX - rect.left;
+            const y = e.type.includes('touch') 
+                ? e.touches[0].clientY - rect.top 
+                : e.clientY - rect.top;
+            return [x, y];
+        }
+
+        // Set up signature pad
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+
+        // Event listeners for signature pad
+        signaturePad.addEventListener('mousedown', startDrawing);
+        signaturePad.addEventListener('mousemove', draw);
+        signaturePad.addEventListener('mouseup', stopDrawing);
+        signaturePad.addEventListener('mouseout', stopDrawing);
+
+        signaturePad.addEventListener('touchstart', startDrawing);
+        signaturePad.addEventListener('touchmove', draw);
+        signaturePad.addEventListener('touchend', stopDrawing);
+
+        // Clear signature button
+        document.getElementById('clear-signature').addEventListener('click', () => {
+            ctx.clearRect(0, 0, signaturePad.width, signaturePad.height);
+        });
+
+        // Submit form
+        document.getElementById('submit-form').addEventListener('click', () => {
+            const name = document.getElementById('name').value;
+            const date = document.getElementById('date').value;
+            
+            const previewCanvas = document.getElementById('preview-canvas');
+            const previewCtx = previewCanvas.getContext('2d');
+            
+            // Set canvas size to match template image
+            previewCanvas.width = templateImage.width;
+            previewCanvas.height = templateImage.height;
+            
+            // Draw template image
+            previewCtx.drawImage(templateImage, 0, 0);
+            
+            // Add text
+            previewCtx.font = '48px Arial';
+            previewCtx.fillStyle = '#000';
+            previewCtx.fillText(name, POSITIONS.name.x, POSITIONS.name.y);
+            previewCtx.fillText(date, POSITIONS.date.x, POSITIONS.date.y);
+            
+            // Add signature
+            previewCtx.drawImage(signaturePad, POSITIONS.signature.x, POSITIONS.signature.y);
+            
+            // Show preview container
+            document.getElementById('preview-container').style.display = 'block';
+        });
+
+        // Download button
+        document.getElementById('download').addEventListener('click', () => {
+            const previewCanvas = document.getElementById('preview-canvas');
+            const link = document.createElement('a');
+            link.download = 'filled-document.png';
+            link.href = previewCanvas.toDataURL();
+            link.click();
+        });
+    </script>
+</body>
+</html>
