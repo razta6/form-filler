@@ -60,30 +60,33 @@
     </style>
 </head>
 <body>
-    <h1>אישור יציאה לגבעות הכורכר</h1>
+    <div id="form-container">
+        <h1>אישור יציאה לגבעות הכורכר</h1>
 
-    <!-- Form Inputs -->
-    <div class="form-group">
-        <label for="name">שם הילד/ה</label>
-        <input type="text" id="name" required>
+
+        <!-- Form Inputs -->
+        <div class="form-group">
+            <label for="name">שם הילד/ה</label>
+            <input type="text" id="name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="date">תאריך</label>
+            <input type="date" id="date" required>
+        </div>
+        
+        <div class="form-group">
+            <label>חתימה</label>
+            <canvas id="signature-pad" width="400" height="200"></canvas>
+            <button id="clear-signature">נקה חתימה</button>
+        </div>
+        
+        <button id="submit-form">שליחה</button>
     </div>
-    
-    <div class="form-group">
-        <label for="date">תאריך</label>
-        <input type="date" id="date" required>
-    </div>
-    
-    <div class="form-group">
-        <label>חתימה</label>
-        <canvas id="signature-pad" width="400" height="200"></canvas>
-        <button id="clear-signature">נקה חתימה</button>
-    </div>
-    
-    <button id="submit-form">שליחה</button>
     
     <div id="preview-container">
         <canvas id="preview-canvas"></canvas>
-<!--         <button id="download">Download</button> -->
+        <!-- <button id="download">Download</button> -->
     </div>
 
     <script>
@@ -184,7 +187,12 @@
             previewCtx.drawImage(signaturePad, POSITIONS.signature.x, POSITIONS.signature.y);
             
             // Show preview container
+            // document.getElementById('preview-container').style.display = 'block';
+
+            document.getElementById('form-container').style.display = 'none';
             document.getElementById('preview-container').style.display = 'block';
+            document.getElementById('new-form-btn').style.display = 'inline-block';
+
         });
 
         // Download button
